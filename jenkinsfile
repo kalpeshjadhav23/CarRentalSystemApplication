@@ -53,7 +53,7 @@ pipeline {
                     passwordVariable: 'DOCKER_PASS'
                 )]) {
 
-                    sh 'echo $DOCKER_PASS | docker login -u kalpesh23 --password-stdin '
+                    sh 'echo $DOCKER_PASS | docker login -u $DOCKER_USER --password-stdin'
 
                     sh 'docker -H tcp://52.66.209.156:2375 push kalpesh23/car_rental_system:latest'
                 }
