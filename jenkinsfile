@@ -18,7 +18,7 @@ pipeline {
         stage('Code Compilation') {
             steps {
                 echo 'Starting Code Compilation...'
-                bat 'mvn clean compile'
+                sh 'mvn clean compile'
                 echo 'Code Compilation Completed Successfully!'
             }
         }
@@ -26,7 +26,7 @@ pipeline {
         stage('Code QA Execution') {
             steps {
                 echo 'Running JUnit Test Cases...'
-                bat 'mvn test'
+                sh 'mvn test'
                 echo 'JUnit Test Cases Completed Successfully!'
             }
         }
@@ -34,7 +34,7 @@ pipeline {
         stage('Code Package') {
             steps {
                 echo 'Creating Artifact...'
-                bat 'mvn package'
+                sh 'mvn package'
                 echo 'Artifact Created Successfully!'
             }
         }
