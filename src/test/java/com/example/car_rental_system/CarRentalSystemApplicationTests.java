@@ -6,11 +6,9 @@ import static org.junit.jupiter.api.Assertions.*;
 
 public class CarRentalSystemApplicationTests {
 
-	// Test Case 1
-	// Check rental price calculation
 
 	@Test
-	public void testCalculatePrice() {
+	 void testCalculatePrice() {
 
 		Car car = new Car("C001", "Toyota",
 				"Camry", 60.0);
@@ -20,11 +18,8 @@ public class CarRentalSystemApplicationTests {
 		assertEquals(300.0, price);
 	}
 
-	// Test Case 2
-	// Check car rental availability
-
 	@Test
-	public void testCarRent() {
+	 void testCarRent() {
 
 		Car car = new Car("C002", "Honda",
 				"Accord", 70.0);
@@ -33,12 +28,8 @@ public class CarRentalSystemApplicationTests {
 
 		assertFalse(car.isAvailable());
 	}
-
-	// Test Case 3
-	// Check car return functionality
-
 	@Test
-	public void testCarReturn() {
+	 void testCarReturn() {
 
 		Car car = new Car("C003", "Mahindra",
 				"Thar", 150.0);
