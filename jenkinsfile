@@ -33,11 +33,12 @@ pipeline {
 
         stage('Code Package') {
             steps {
-                echo 'Creating JAR/WAR Artifact...'
+                echo 'Creating Artifact...'
                 bat 'mvn package'
                 echo 'Artifact Created Successfully!'
             }
         }
 
     }
+
 }
