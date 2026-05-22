@@ -1,5 +1,7 @@
 package com.example.car_rental_system;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 
@@ -12,6 +14,7 @@ public class CarRentalSystemApplication {
 		Car car1 = new Car("C001", "Toyota", "Camry", 60.0);
 		Car car2 = new Car("C002", "Honda", "Accord", 70.0);
 		Car car3 = new Car("C003", "Mahindra", "Thar", 150.0);
+		final Logger logger = LoggerFactory.getLogger(CarRentalSystemApplication.class);
 
 		rentalSystem.addCar(car1);
 		rentalSystem.addCar(car2);
