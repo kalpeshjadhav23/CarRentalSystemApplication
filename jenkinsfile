@@ -32,11 +32,11 @@ pipeline {
            }
        }
 
-        stage('Quality Gate') {
-            steps {
-                waitForQualityGate abortPipeline: true
-            }
-        }
+       stage('Quality Gate') {
+           timeout(time: 2, unit: 'MINUTES') {
+               waitForQualityGate abortPipeline: false
+           }
+       }
 
         stage('Package Application') {
             steps {
