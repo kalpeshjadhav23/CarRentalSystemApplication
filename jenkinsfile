@@ -12,12 +12,6 @@ pipeline {
 
     stages {
 
-        stage('Clone Code') {
-            steps {
-                git 'https://github.com/kalpeshjadhav23/CarRentalSystemApplication.git'
-            }
-        }
-
         stage('Code Compilation') {
             steps {
                 sh 'mvn clean compile'
@@ -33,8 +27,9 @@ pipeline {
         stage('SonarQube Analysis') {
             steps {
                 withSonarQubeEnv('SonarQube') {
+
                     sh '''
-                    $SCANNER_HOME/bin/sonar-scanner
+                    mvn sonar:sonar
                     '''
                 }
             }
@@ -54,10 +49,24 @@ pipeline {
 
         stage('Build Docker Image') {
             steps {
-                sh 'docker build -t car_rental_system .'
+                sh 'docker -H tcp://52.66.209.156:2375 build -t kalpeshjadhav23/car_rental_system:latest .'
             }
         }
 
-    }
+        stage('Push Docker Image') {
+            steps {
 
+                withCredentials([usernamePassword(
+                    credentialsId: 'dockerhub',
+                    usernameVariable: 'DOCKER_USER',
+                    passwordVariable: 'DOCKER_PASS'
+                )]) {
+
+                    sh 'echo $DOCKER_PASS | docker login -u $DOCKER_USER --password-stdin'
+
+                    sh 'docker -H tcp://52.66.209.156:2375 push kalpeshjadhav23/car_rental_system:latest'
+                }
+            }
+        }
+    }
 }
