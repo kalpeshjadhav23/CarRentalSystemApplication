@@ -1,26 +1,20 @@
 package com.example.car_rental_system;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Scanner;
 
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-
 public class CarRentalSystem {
 
-    private List<Car> cars;
-    private List<Customer> customers;
-    private List<Rental> rentals;
+    private final List<Car> cars = new ArrayList<>();
+    private final List<Customer> customers = new ArrayList<>();
+    private final List<Rental> rentals = new ArrayList<>();
 
     private static final Logger logger =
             LoggerFactory.getLogger(CarRentalSystem.class);
-
-    public CarRentalSystem() {
-        cars = new ArrayList<>();
-        customers = new ArrayList<>();
-        rentals = new ArrayList<>();
-    }
 
     public void addCar(Car car) {
         cars.add(car);
@@ -43,91 +37,114 @@ public class CarRentalSystem {
         car.returnCar();
     }
 
+    // ================= MENU =================
     public void menu() {
 
         Scanner scanner = new Scanner(System.in);
 
         while (true) {
 
-            logger.info("===== Car Rental System =====");
-            logger.info("1. Rent a Car");
-            logger.info("2. Return a Car");
-            logger.info("3. Exit");
+            showMenu();
 
             int choice = scanner.nextInt();
             scanner.nextLine();
 
-            if (choice == 1) {
+            switch (choice) {
 
-                logger.info("Enter Name: ");
-                String customerName = scanner.nextLine();
+                case 1 -> rentCarFlow(scanner);
 
-                logger.info("Available Cars:");
+                case 2 -> returnCarFlow(scanner);
 
-                for (Car car : cars) {
-                    if (car.isAvailable()) {
-                        logger.info("{} {} {}",
-                                car.getCarId(),
-                                car.getBrand(),
-                                car.getModel());
-                    }
+                case 3 -> {
+                    logger.info("Exiting system...");
+                    scanner.close();
+                    return;
                 }
 
-                logger.info("Enter Car ID: ");
-                String carId = scanner.nextLine();
+                default -> logger.info("Invalid choice");
+            }
+        }
+    }
 
-                logger.info("Enter Rental Days: ");
-                int days = scanner.nextInt();
-                scanner.nextLine();
+    // ================= MENU UI =================
+    private void showMenu() {
+        logger.info("===== Car Rental System =====");
+        logger.info("1. Rent a Car");
+        logger.info("2. Return a Car");
+        logger.info("3. Exit");
+    }
 
-                Customer customer = new Customer(
-                        "CUS" + (customers.size() + 1),
-                        customerName
-                );
+    // ================= RENT FLOW =================
+    private void rentCarFlow(Scanner scanner) {
 
-                addCustomer(customer);
+        logger.info("Enter Name: ");
+        String customerName = scanner.nextLine();
 
-                Car selectedCar = null;
+        logger.info("Available Cars:");
 
-                for (Car car : cars) {
-                    if (car.getCarId().equals(carId) && car.isAvailable()) {
-                        selectedCar = car;
-                        break;
-                    }
-                }
-
-                if (selectedCar != null) {
-
-                    double totalPrice = selectedCar.calculatePrice(days);
-                    logger.info("Total Price: ${}", totalPrice);
-                    rentCar(selectedCar, customer, days);
-                    logger.info("Car Rented Successfully");
-
-                } else {
-                    logger.info("Invalid Car ID");
-                }
-
-            } else if (choice == 2) {
-
-                logger.info("Enter Car ID to Return: ");
-                String carId = scanner.nextLine();
-
-                for (Car car : cars) {
-                    if (car.getCarId().equals(carId)) {
-                        returnCar(car);
-                        logger.info("Car Returned Successfully");
-                        break;
-                    }
-                }
-
-            } else if (choice == 3) {
-                logger.info("Exiting System...");
-                break;
-            } else {
-                logger.info("Invalid Choice");
+        for (Car car : cars) {
+            if (car.isAvailable()) {
+                logger.info("{} {} {}",
+                        car.getCarId(),
+                        car.getBrand(),
+                        car.getModel());
             }
         }
 
-        scanner.close();
+        logger.info("Enter Car ID: ");
+        String carId = scanner.nextLine();
+
+        logger.info("Enter Rental Days: ");
+        int days = scanner.nextInt();
+        scanner.nextLine();
+
+        Customer customer = new Customer(
+                "CUS" + (customers.size() + 1),
+                customerName
+        );
+
+        addCustomer(customer);
+
+        Car selectedCar = findAvailableCar(carId);
+
+        if (selectedCar == null) {
+            logger.info("Invalid Car ID");
+            return;
+        }
+
+        double totalPrice = selectedCar.calculatePrice(days);
+        logger.info("Total Price: ${}", totalPrice);
+
+        rentCar(selectedCar, customer, days);
+
+        logger.info("Car Rented Successfully");
+    }
+
+    // ================= RETURN FLOW =================
+    private void returnCarFlow(Scanner scanner) {
+
+        logger.info("Enter Car ID to Return: ");
+        String carId = scanner.nextLine();
+
+        for (Car car : cars) {
+            if (car.getCarId().equals(carId)) {
+                returnCar(car);
+                logger.info("Car Returned Successfully");
+                return;
+            }
+        }
+
+        logger.info("Car not found");
+    }
+
+    // ================= HELPER =================
+    private Car findAvailableCar(String carId) {
+
+        for (Car car : cars) {
+            if (car.getCarId().equals(carId) && car.isAvailable()) {
+                return car;
+            }
+        }
+        return null;
     }
 }
